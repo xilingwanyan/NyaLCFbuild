@@ -44,7 +44,7 @@ jobs:
           path: nyalcf_cli/build
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm64
 
     steps:
       - name: Checkout
@@ -70,7 +70,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Linux Artifact
+          name: Linux ARM64 Artifact
           path: nyalcf_cli/build
 
   macos:
