@@ -64,7 +64,7 @@ jobs:
         run: |-
           cd nyalcf_cli
           mkdir -p build
-          dart compile exe bin/nyalcf_cli.dart -o build/nyalcf_cli-linux-x64
+          dart compile exe bin/nyalcf_cli.dart -o build/nyalcf_cli-linux-arm64
           cd ..
 
       - name: Upload Artifact
