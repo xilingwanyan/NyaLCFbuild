@@ -8,7 +8,7 @@ name: Build CLI
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   windows:
@@ -44,7 +44,7 @@ jobs:
           path: nyalcf_cli/build
 
   linux:
-    runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -64,13 +64,13 @@ jobs:
         run: |-
           cd nyalcf_cli
           mkdir -p build
-          dart compile exe bin/nyalcf_cli.dart -o build/nyalcf_cli-linux-arm64
+          dart compile exe bin/nyalcf_cli.dart -o build/nyalcf_cli-linux-x64
           cd ..
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Linux ARM64 Artifact
+          name: Linux Artifact
           path: nyalcf_cli/build
 
   macos:

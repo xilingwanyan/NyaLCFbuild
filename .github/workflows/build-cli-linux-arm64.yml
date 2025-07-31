@@ -1,0 +1,46 @@
+name: Build CLI linux arm64
+
+on:
+  push:
+    branches:
+      - main
+
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          path: src
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build ARM64 binary
+        uses: docker/build-push-action@v5
+        with:
+          context: src/nyalcf_cli
+          platforms: linux/arm64
+          outputs: type=local,dest=artifacts/linux-arm64
+          build-args: |
+            DART_VERSION=stable
+
+      - name: Verify binary architecture
+        run: |
+          file artifacts/linux-arm64/nyalcf_cli-linux-arm64
+          echo "Binary architecture:"
+          readelf -h artifacts/linux-arm64/nyalcf_cli-linux-arm64 | grep Machine
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linux ARM64 Artifact
+          path: artifacts/linux-arm64
+          
