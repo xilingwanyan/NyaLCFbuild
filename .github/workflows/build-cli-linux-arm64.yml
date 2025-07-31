@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  linux:
+  build-linux-arm64:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,7 +14,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-          path: src
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -27,11 +26,19 @@ jobs:
       - name: Build ARM64 binary
         uses: docker/build-push-action@v5
         with:
-          context: src/nyalcf_cli
+          context: nyalcf_cli
+          file: nyalcf_cli/Dockerfile
           platforms: linux/arm64
           outputs: type=local,dest=artifacts/linux-arm64
           build-args: |
             DART_VERSION=stable
+          push: false
+          load: true
+          no-cache: false
+          pull: true
+
+      - name: Fix permissions
+        run: sudo chmod -R a+rwx artifacts
 
       - name: Verify binary architecture
         run: |
@@ -44,4 +51,3 @@ jobs:
         with:
           name: Linux ARM64 Artifact
           path: artifacts/linux-arm64
-          
