@@ -6,40 +6,33 @@ on:
       - main
 
 jobs:
-  build-linux-arm64:
-    runs-on: ubuntu-latest
+  linux:
+    runs-on: ubuntu-22.04-arm64
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: true
-
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
-        with:
-          version: stable
 
-      - name: Install QEMU for ARM emulation
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static gcc-aarch64-linux-gnu
-
-      - name: Build for ARM64
-        run: |
+      - name: Install Dependencies
+        run: |-
           cd nyalcf_cli
           dart pub get
-          
-          # 使用 qemu 模拟 ARM 环境进行编译
-          export QEMU_LD_PREFIX=/usr/aarch64-linux-gnu
+          cd ..
+
+      - name: Compile CLI
+        run: |-
+          cd nyalcf_cli
+          mkdir -p build
           dart compile exe bin/nyalcf_cli.dart -o build/nyalcf_cli-linux-arm64
-          
-          # 验证二进制
-          file build/nyalcf_cli-linux-arm64
-          readelf -h build/nyalcf_cli-linux-arm64 | grep Machine
+          cd ..
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Linux ARM64 Artifact
           path: nyalcf_cli/build
+          
